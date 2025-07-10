@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Combined Shape</title>
+    <g id="web_7" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="contact-us" transform="translate(-1080.000000, -304.000000)">
+            <g id="close" transform="translate(1070.000000, 294.000000)">
+                <path d="M17.25,9 C17.6642136,9 18,9.33578644 18,9.75 L18,16 L24.25,16 C24.6642136,16 25,16.3357864 25,16.75 L25,17.25 C25,17.6642136 24.6642136,18 24.25,18 L18,18 L18,24.25 C18,24.6642136 17.6642136,25 17.25,25 L16.75,25 C16.3357864,25 16,24.6642136 16,24.25 L16,18 L9.75,18 C9.33578644,18 9,17.6642136 9,17.25 L9,16.75 C9,16.3357864 9.33578644,16 9.75,16 L16,16 L16,9.75 C16,9.33578644 16.3357864,9 16.75,9 L17.25,9 Z" id="Combined-Shape" transform="translate(17.000000, 17.000000) rotate(-315.000000) translate(-17.000000, -17.000000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>
