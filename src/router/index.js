@@ -72,7 +72,16 @@ const routes = [
           requiresAuth: true,
           requiresAuthKey: ['LOGIN']
         }
-      },      
+      }, 
+      {
+        path: 'unsettle-result-history',
+        name: 'UnsettleResultHistory',
+        component: () => import('../views/UnsettleResultHistory.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresAuthKey: ['LOGIN']
+        }
+      },            
       {
         path: 'result-video-link',
         name: 'ResultVideoLink',
