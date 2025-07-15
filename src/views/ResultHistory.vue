@@ -206,9 +206,11 @@ export default {
       ExtraSicbo: ['WithRandomPay'],
       ThaiHiLo: ['WithRandomPay'],
       ThaiFishPrawnCrab: ['WithRandomPay'],
+      Sedie: ['WithRandomPay'],
       'Teenpatti 20-20': ['PlayerA', 'PlayerB'],
+      RBSicbo: ['Red', 'Blue'],
       ExtraAndarBahar: ['MaindCard', 'AndarCards', 'BaharCards', 'TotalCardCount', 'WithRandomPay'],
-      // ...其他遊戲
+      'Pok Deng': ['PlayerA', 'PlayerB', 'Banker']
     }  
     
     const allResultDetailFields = computed(() => {

@@ -24,7 +24,18 @@
       :key="field"
       class="py-3 small text-center"
     >
-      <template v-if="Array.isArray(normalizedResultDetail[field])">
+      <!-- AndarCards/BaharCards 換行顯示 -->
+      <template v-if="gameType === 'ExtraAndarBahar' && (field === 'AndarCards' || field === 'BaharCards')">
+        <template v-if="Array.isArray(normalizedResultDetail[field]) && normalizedResultDetail[field].length">
+          <span v-for="(card, idx) in normalizedResultDetail[field].slice(0, 20)" :key="idx">
+            {{ card }}<span v-if="(idx + 1) % 10 === 0"><br/></span>
+            <span v-else-if="idx < normalizedResultDetail[field].length - 1">, </span>
+          </span>
+        </template>
+        <span v-else>-</span>
+      </template>
+      <!-- 其他欄位 -->
+      <template v-else-if="Array.isArray(normalizedResultDetail[field])">
         {{ normalizedResultDetail[field].join(', ') }}
       </template>
       <template v-else>
@@ -164,6 +175,27 @@ export default {
         else if (gameType === 'DragonTiger' && (field === 'Dragon' || field === 'Tiger')) {
           result[field] = detail[field.toLowerCase()] ? [detail[field.toLowerCase()]] : []
         }
+        // ExtraAndarBahar 特殊處理
+        else if (gameType === 'ExtraAndarBahar') {
+          if (field === 'MaindCard') {
+            result[field] = detail.maindCard || '-'
+          } else if (field === 'AndarCards') {
+            result[field] = Array.isArray(detail.andarCards) ? detail.andarCards : []
+          } else if (field === 'BaharCards') {
+            result[field] = Array.isArray(detail.baharCards) ? detail.baharCards : []
+          } else if (field === 'TotalCardCount') {
+            result[field] = detail.totalCardCount !== undefined ? detail.totalCardCount : '-'
+          } else if (field === 'WithRandomPay') {
+            result[field] = detail.withRandomPay !== undefined ? detail.withRandomPay : '-'
+          } else {
+            result[field] = detail[field] !== undefined ? detail[field] : '-'
+          }
+        }   
+        // Pok Deng 特殊處理
+        else if (gameType === 'Pok Deng' && (field === 'PlayerA' || field === 'PlayerB' || field === 'Banker')) {
+          // 例如: playerA: [D07, D05, D09]
+          result[field] = Array.isArray(detail[field]) ? detail[field] : [detail[field]].filter(Boolean)
+        }             
         // 其他遊戲
         else {
           result[field] = detail[field] !== undefined ? detail[field] : '-'
