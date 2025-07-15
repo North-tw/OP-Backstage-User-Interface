@@ -18,8 +18,6 @@
       </template>
       <span v-else>-</span>
     </td>
-    <td class="py-3 small text-center">{{ unsettle }}</td>
-    <td class="py-3 small text-center">{{ total }}</td>    
     <!-- 動態欄位 -->
     <td
       v-for="field in resultDetailFields"
