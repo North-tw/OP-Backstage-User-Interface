@@ -100,7 +100,7 @@
   </div>
 </template>
 <script>
-import { computed, provide, ref } from 'vue'
+import { computed, provide, ref, onBeforeUnmount } from 'vue'
 import { useQueryStore } from '@/stores/query'
 import { useCommonStore } from '@/stores/common'
 import AppBreadcrumb from '@/components/AppBreadcrumb.vue'
@@ -124,13 +124,13 @@ export default {
   emits: ['update:status'],
   async setup (props, { emit }) {
     const { setAlert } = useMixin()
-    const queryStroe = useQueryStore()
+    const queryStore = useQueryStore()
     const commonStore = useCommonStore()
 
     const { getErrorMessage, isResponseSuccess } = useErrorMessage()
     const { getThousands } = useMixin()
 
-    const resultVideoLinkObject = computed(() => queryStroe.resultVideoLinkObject || {})
+    const resultVideoLinkObject = computed(() => queryStore.resultVideoLinkObject || {})
 
     // 新增：包成陣列
     const resultVideoLinkList = computed(() => {
@@ -191,11 +191,33 @@ export default {
 
     const onResetList = () => {
       // 清空列表資料
-      queryStroe.resultVideoLinkObject = {}
+      queryStore.resultVideoLinkObject = {}
       // 如果有 resultVideoLinkList 這種 computed 也會自動變空
       // 也可以重設分頁
       resetPagination()
     }    
+
+    // 新增：頁面離開時清除資料
+    const onPageLeave = () => {
+      // 清空列表資料
+      queryStore.resultVideoLinkObject = {}
+      // 重置分頁資訊
+      resetPagination()
+      // 重置搜尋狀態
+      searchState.value = {
+        dealerDomain: commonStore.getDealerDomainList[0] || null,
+        hallType: null,
+        gameType: null,
+        tableID: null,
+        shoeNo: null,
+        roundNo: null
+      }
+    }
+
+    // 監聽頁面離開事件
+    onBeforeUnmount(() => {
+      onPageLeave()
+    })        
 
     const v$ = useVuelidate(rules, state)
 
@@ -274,7 +296,7 @@ export default {
       }
 
       try {
-        const response = await queryStroe.readResultVideoLinkList(payload)
+        const response = await queryStore.readResultVideoLinkList(payload)
         // getErrorMessage
         if (!isResponseSuccess(response)) {
           setAlert(true, false, getErrorMessage(response))
