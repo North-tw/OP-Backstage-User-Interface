@@ -82,7 +82,7 @@
           :item-index="(pageInfo.page - 1) * pageInfo.perPage + index + 1"
         />
         <tr v-if="!voidRoundLogList.length">
-          <td colspan="9" class="text-center text-secondary">
+          <td colspan="10" class="text-center text-secondary">
             No Data.
           </td>
         </tr>
