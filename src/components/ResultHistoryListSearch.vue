@@ -321,8 +321,18 @@ export default {
     }
 
     const updateSearchState = () => {
-      emit('update:searchState', JSON.parse(JSON.stringify(state.value)))
-      emit('setSearchState', true) // 傳遞 isSearch = true
+      const params = {
+        dealerDomain: state.value.dealerDomain,
+        hallType: state.value.hallType,
+        gameType: state.value.gameType,
+        tableID: state.value.tableID,
+        shoeNo: state.value.shoeNo
+      }
+      if (state.value.roundNo) {
+        params.roundNo = state.value.roundNo
+      }
+      emit('update:searchState', params)
+      emit('setSearchState', true)
     }
 
     const inputMap = {

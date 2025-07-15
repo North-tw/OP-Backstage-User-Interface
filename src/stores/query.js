@@ -18,6 +18,7 @@ export const useQueryStore = defineStore('query', {
           ? response.data.data.results
           : []       
         this.resultHistoryList = responseData
+        console.log(responseData)
         return response
       } catch (error) {
         this.resultHistoryList = []

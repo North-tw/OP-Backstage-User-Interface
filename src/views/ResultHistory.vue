@@ -59,7 +59,15 @@
           </th>
           <th class="text-center small">
             Link
-          </th>              
+          </th>   
+          <!-- 動態欄位 -->
+          <th
+            v-for="field in allResultDetailFields"
+            :key="field"
+            class="text-center small"
+          >
+            {{ field }}
+          </th>                     
         </tr>
       </thead>
       <tbody class="border-top">
@@ -74,8 +82,10 @@
           :round-start-time="item.updateTime"
           :calculate="item.calculate"
           :voided="item.voided"
-          :result="item.result"
+          :result="item.gameResult"
           :link="item.link"
+          :result-detail-fields="allResultDetailFields"
+          :result-detail="item.resultDetail"          
           :item-index="(pageInfo.page - 1) * pageInfo.perPage + index + 1"
         />
         <tr v-if="!resultHistoryList.length">
@@ -187,7 +197,31 @@ export default {
       // 清空列表資料
       queryStore.resultHistoryList = []
       resetPagination()
-    }     
+    }  
+    
+    const resultDetailFieldMap = {
+      Baccarat: ['Player', 'Banker'],
+      DragonTiger: ['Dragon', 'Tiger'],
+      Sicbo: ['WithRandomPay'],
+      ExtraSicbo: ['WithRandomPay'],
+      ThaiHiLo: ['WithRandomPay'],
+      ThaiFishPrawnCrab: ['WithRandomPay'],
+      'Teenpatti 20-20': ['PlayerA', 'PlayerB'],
+      ExtraAndarBahar: ['MaindCard', 'AndarCards', 'BaharCards', 'TotalCardCount', 'WithRandomPay'],
+      // ...其他遊戲
+    }  
+    
+    const allResultDetailFields = computed(() => {
+      // 取得目前頁面所有出現過的 gameType
+      const types = new Set(resultHistoryList.value.map(item => item.gameType))
+      // 合併所有遊戲的欄位
+      const fields = []
+      types.forEach(type => {
+        const arr = resultDetailFieldMap[type] || []
+        arr.forEach(f => { if (!fields.includes(f)) fields.push(f) })
+      })
+      return fields
+    })    
 
     const v$ = useVuelidate(rules, state)
 
@@ -327,7 +361,9 @@ export default {
       readTableIDList,
       readResultHistoryList,
       onSetPage,
-      onResetList
+      onResetList,
+      resultDetailFieldMap,
+      allResultDetailFields
     }
   }
 }
