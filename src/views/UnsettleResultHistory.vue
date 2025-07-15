@@ -125,7 +125,7 @@
   </div>
 </template>
 <script>
-import { computed, provide, ref } from 'vue'
+import { computed, provide, ref, onBeforeUnmount } from 'vue'
 import { useQueryStore } from '@/stores/query'
 import { useCommonStore } from '@/stores/common'
 import AppBreadcrumb from '@/components/AppBreadcrumb.vue'
@@ -206,6 +206,28 @@ export default {
       queryStore.unsettleResultHistoryList = []
       resetPagination()
     }  
+
+    // 新增：頁面離開時清除資料
+    const onPageLeave = () => {
+      // 清空列表資料
+      queryStore.unsettleResultHistoryList = []
+      // 重置分頁資訊
+      resetPagination()
+      // 重置搜尋狀態
+      searchState.value = {
+        dealerDomain: commonStore.getDealerDomainList[0] || null,
+        hallType: null,
+        gameType: null,
+        tableID: null,
+        shoeNo: null,
+        roundNo: null
+      }
+    }
+
+    // 監聽頁面離開事件
+    onBeforeUnmount(() => {
+      onPageLeave()
+    })    
     
     const resultDetailFieldMap = {
       Baccarat: ['Player', 'Banker'],
