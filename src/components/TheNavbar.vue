@@ -150,8 +150,8 @@ export default {
             active: true
           },
           {
-            title: 'Unsettled Result History',
-            link: '/unsettled-result-history',
+            title: 'Unsettle Result History',
+            link: '/unsettle-result-history',
             active: true
           },
           {

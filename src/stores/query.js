@@ -4,6 +4,7 @@ import { useQueryAPI } from '@/helpers/useApi'
 export const useQueryStore = defineStore('query', {
   state: () => ({
     resultHistoryList: [],
+    unsettleResultHistoryList: [],
     resultVideoLinkObject: {},
     linkList: []
   }),
@@ -24,7 +25,24 @@ export const useQueryStore = defineStore('query', {
         this.resultHistoryList = []
         return Promise.reject(error)
       }
-    },     
+    },  
+    async readUnsettleResultHistoryList(payload = {}) {
+      const method = 'get'
+      const path = '/games/results'
+      const data = { params: { ...payload } }
+      try {
+        const response = await useQueryAPI({ method, path, data })
+        const responseData = Array.isArray(response.data?.data?.results)
+          ? response.data.data.results
+          : []       
+        this.unsettleResultHistoryList = responseData
+        console.log(responseData)
+        return response
+      } catch (error) {
+        this.unsettleResultHistoryList = []
+        return Promise.reject(error)
+      }
+    },         
     async readResultVideoLinkList(payload = {}) {
         const method = 'get'
         const path = `/games/tables/${payload.tableID}/streaming-link`
@@ -48,6 +66,7 @@ export const useQueryStore = defineStore('query', {
   },
   getters: {
     getResultHistoryList: (state) => state.resultHistoryList,
+    getUnsettleResultHistoryList: (state) => state.unsettleResultHistoryList,
     getResultVideoLinkObject: (state) => state.resultVideoLinkObject
   }
 })

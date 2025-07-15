@@ -222,7 +222,7 @@ import { requiredHelper, numericHelper , useVuelidate } from '@/helpers/useVueli
 import AppInput from '@/components/AppInput'
 
 export default {
-  name: 'ResultHistoryListSearch',
+  name: 'UnsettleResultHistoryListSearch',
   components: {
     AppInput
   },
@@ -371,7 +371,7 @@ export default {
       gameType: { requiredHelper },
       tableID: { requiredHelper },
       shoeNo: { requiredHelper, numericHelper },
-      roundNo: { numericHelper}
+      roundNo: { requiredHelper, numericHelper}
     }
 
     const v$ = useVuelidate(rules, state)
