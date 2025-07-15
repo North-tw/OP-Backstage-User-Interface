@@ -1,0 +1,38 @@
+# This pipeline will upgrade both UAT and DEV Server
+name: uat stage CI/CD
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['uat']
+    paths-ignore:
+      - '*.md'
+
+jobs:
+  build-deploy:
+    name: Build and Deploy to AWS S3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version: 22
+
+      - name: Build command
+        run: |
+          npm install
+          npm run build:uat        
+
+      - name: Sync to AWS S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET_UAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'ap-northeast-1'
+          SOURCE_DIR: 'dist'
