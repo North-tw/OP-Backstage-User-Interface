@@ -5,14 +5,14 @@
       :key="field"
       class="py-3 small text-center"
       :class="field === 'status'
-        ? ($props[field] === 'Open'
+        ? (state[field] === 'Open'
             ? 'text-success'
-            : $props[field] === 'Close'
+            : state[field] === 'Close'
               ? 'text-danger'
               : '') 
         : ''"      
     >
-      {{ field === 'updateTime' ? $formatDateTime($props[field]) : $props[field] }}
+      {{ field === 'updateTime' ? $formatDateTime(state[field]) : state[field] }}
     </td>
 
     <td>
@@ -21,10 +21,12 @@
         <button
           type="button"
           class="btn"
-          :class="status === 'Open' ? 'btn-outline-danger' : 'btn-outline-success'"
+          :class="state.status === 'Open' ? 'btn-outline-danger' : 'btn-outline-success'"
+          :disabled="isLoading"
           @click="switchTableStatusCheck"
         >
-          {{ status === 'Open' ? 'Close' : 'Open' }}
+          <span v-if="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {{ state.status === 'Open' ? 'Close' : 'Open' }}
         </button>
       </div>
     </td>
@@ -38,15 +40,15 @@
   >
     <template #header>
       <h5 class="col-12 font-weight-bold text-center p-3">
-        {{ status === 'Open' ? 'This site is currently Open.' : 'This site is currently Closed.' }}
+        {{ state.status === 'Open' ? 'This site is currently Open.' : 'This site is currently Closed.' }}
       </h5>
     </template>
     <template #body>
       <div class="d-flex flex-column align-items-center">
         <h6 class="mb-4">
           You are about to change the status to
-          <span :class="status === 'Open' ? 'text-danger' : 'text-success'">
-            {{ status === 'Open' ? 'Close' : 'Open' }}
+          <span :class="state.status === 'Open' ? 'text-danger' : 'text-success'">
+            {{ state.status === 'Open' ? 'Close' : 'Open' }}
           </span>.
         </h6>
         <h6 class="mb-4 text-danger">
@@ -55,10 +57,10 @@
       </div>
     </template>
   </ConfirmModal>
-
 </template>
+
 <script>
-import { computed, provide, ref, inject } from 'vue'
+import { computed, provide, ref, inject, watch } from 'vue'
 import { useGlobalStore } from '@/stores/global'
 import AppInput from '@/components/AppInput.vue'
 import ConfirmModal from '@/components/ConfirmModal.vue'
@@ -72,6 +74,10 @@ export default {
     AppInput, ConfirmModal
   },
   props: {
+    id: {
+      type: [String, Number],
+      default: null
+    },    
     dealerDomain: {
       type: String,
       default: ''
@@ -112,6 +118,7 @@ export default {
     const readGlobalList = inject('readGlobalList')
 
     const callback = ref('')
+    const isLoading = ref(false)
 
     const isSwitchModalActive = ref(false)
     const setIsSwitchModalActive = (active) => {
@@ -136,13 +143,14 @@ export default {
       ...props
     })
 
-    const labelMap = {
+    // 監聽 props 變化並同步更新 state
+    watch(() => props, (newProps) => {
+      state.value = { ...newProps }
+    }, { deep: true })
 
-    }
+    const labelMap = {}
 
-    const rules = {
-
-    }
+    const rules = {}
 
     const v$ = useVuelidate(rules, state)
 
@@ -156,37 +164,61 @@ export default {
 
     const switchSiteStatus = async () => {
       v$.value.$touch()
-      if (state.value.tableID != null && state.value.tableID !== '') {
+      if (state.value.id && state.value.dealerDomain && state.value.hallType) {
+        const newStatus = state.value.status === 'Open' ? 'Close' : 'Open'
         const payload = {
+          ID: state.value.id,
           dealerDomain: state.value.dealerDomain,
           hallType: state.value.hallType,
-          status: state.value.status
+          status: newStatus
         }
+
+        isLoading.value = true
 
         try {
           const response = await globalStore.switchSiteStatus(payload)
-          readGlobalList()
+          
+          // 關閉彈跳視窗
+          setIsSwitchModalActive(false)
 
-          // getErrorMessage
+          // 檢查回應
           if (isResponseSuccess(response)) {
-            setAlert(true, true, getSuccessMessage(response))
+            // 立即更新本地狀態
+            state.value.status = newStatus
+            state.value.updateTime = new Date().toISOString()
+            
+            // 通知父組件更新
+            emit('update:status', {
+              id: state.value.id,
+              status: newStatus,
+              updateTime: state.value.updateTime
+            })
+
+            setAlert(true, true, getSuccessMessage(response) || 'Chanege Successful')
+            
+            // 重新讀取列表以確保數據同步
+            await readGlobalList()
           } else {
             setAlert(true, false, getErrorMessage(response))
           }
 
           return response
         } catch (error) {
-          setAlert(true, false, `刪除失敗: ${error}`)
-          readGlobalList()
+          setAlert(true, false, `Change Failed: ${error.message || error}`)
+          setIsSwitchModalActive(false)
           return Promise.reject(error)
+        } finally {
+          isLoading.value = false
         }
+      } else {
+        setAlert(true, false, 'No required paramters found：ID、Dealer Domain or Hall Type')
+        setIsSwitchModalActive(false)
       }
     }
 
     provide('readGlobalList', readGlobalList)
     provide('isModalActive', isModalActive)
     provide('setIsModalActive', setIsModalActive)
- 
 
     return {
       v$,
@@ -194,6 +226,7 @@ export default {
       labelMap,
       fieldList,
       callback,
+      isLoading,
       isSwitchModalActive,
       setIsSwitchModalActive,
       isModalActive,
@@ -204,6 +237,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss" module>
 .smallerInput {
   font-size: 0.875em !important;
@@ -218,6 +252,7 @@ export default {
   max-width: 350px;
   font-size: 0.875em !important;
 }
+
 .enable{
   width: 110% !important;
   font-size: 0.875em !important;
