@@ -51,6 +51,7 @@
         <GlobalMaintenanceListItem
           v-for="(item, index) in globalMaintenanceList"
           :key="item.ID"
+          :id="item.ID"
           :dealer-domain="item.DealerDomain"
           :hall-type="item.HallType"
           :update-time="item.UpdateTime"
@@ -192,6 +193,19 @@ export default {
       }
     }
 
+    // 處理狀態更新
+    const onStatusUpdate = (updateData) => {
+      // 在 store 中更新對應的項目
+      const list = globalStore.globalList
+      const index = list.findIndex(item => item.ID === updateData.id)
+      if (index !== -1) {
+        list[index].GameTableStatus = updateData.status
+        list[index].UpdateTime = updateData.updateTime
+        // 觸發響應式更新
+        globalStore.globalList = [...list]
+      }
+    }    
+
     // 分頁切換
     const onSetPage = (newPage) => {
       readGlobalList(newPage)
@@ -218,7 +232,8 @@ export default {
       getThousands,
       v$,
       readGlobalList,
-      onSetPage
+      onSetPage,
+      onStatusUpdate
     }
   }
 }
