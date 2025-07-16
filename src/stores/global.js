@@ -25,7 +25,6 @@ export const useGlobalStore = defineStore('global', {
       const path = `/global-maintenance/${payload.ID}`
       const data = payload
       try {
-        console.log('API 請求:', { method, path, data })
         const response = await useGlobalAPI({ method, path, data })
         
         // 成功後更新本地狀態
@@ -35,7 +34,6 @@ export const useGlobalStore = defineStore('global', {
         
         return response
       } catch (error) {
-        console.error('API 錯誤:', error)
         return Promise.reject(error)
       }
     },
