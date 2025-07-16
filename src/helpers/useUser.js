@@ -1,4 +1,3 @@
-import store from '@/store'
 import router from '@/router'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
