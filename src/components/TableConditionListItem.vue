@@ -181,7 +181,10 @@ export default {
       v$.value.$touch()
       if (state.value.tableID != null && state.value.tableID !== '') {
         const payload = {
-          tableID: state.value.tableID
+          tableID: state.value.tableID,
+          dealerDomain: state.value.dealerDomain,
+          hallType: state.value.hallType,
+          status: state.value.status
         }
 
         try {
@@ -197,7 +200,7 @@ export default {
 
           return response
         } catch (error) {
-          setAlert(true, false, `刪除失敗: ${error}`)
+          setAlert(true, false, `Change Failed: ${error}`)
           readTableConditionList()
           return Promise.reject(error)
         }
