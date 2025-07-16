@@ -249,28 +249,28 @@ export default {
         placeholder: 'Enter Round Number'
       },
       playerCard1: {
-        label: 'P1',
-        placeholder: 'Select P1 Card'
+        label: 'Plaer Card 1',
+        placeholder: 'Select Player Card 1'
       },
       playerCard2: {
-        label: 'P2',
-        placeholder: 'Select P2 Card'
+        label: 'Plaer Card 2',
+        placeholder: 'Select Player Card 2'
       },
       playerCard3: {
-        label: 'P3',
-        placeholder: 'Select P3 Card'
+        label: 'Plaer Card 3',
+        placeholder: 'Select Player Card 3'
       },
       bankerCard1: {
-        label: 'B1',
-        placeholder: 'Select B1 Card'
+        label: 'Banker Card 1',
+        placeholder: 'Select Banker Card 1'
       },
       bankerCard2: {
-        label: 'B2',
-        placeholder: 'Select B2 Card'
+        label: 'Banker Card 2',
+        placeholder: 'Select Banker Card 2'
       },
       bankerCard3: {
-        label: 'B3',
-        placeholder: 'Select B3 Card'
+        label: 'Banker Card 3',
+        placeholder: 'Select Banker Card 3'
       },
       dragonCard: {
         label: 'Dragon',
@@ -381,7 +381,9 @@ export default {
           dragonCard: { requiredHelper },
           tigerCard: { requiredHelper }
         }
-      } else if (state.gameType === 'Sicbo' || state.gameType === 'ExtraSicbo' || state.gameType === 'ThaiHiLo') {
+      } else if (state.gameType === 'Sicbo' || state.gameType === 'ExtraSicbo' || state.gameType === 'ThaiHiLo'
+        || state.gameType === 'ThaiFishPrawnCrab' || state.gameType === 'FishPrawnCrab'
+      ) {
         return {
           dealerDomain: { requiredHelper },
           hallType: { requiredHelper },
@@ -428,6 +430,16 @@ export default {
           round: { numericHelper, requiredHelper },
           red: { requiredHelper },
           blue: { requiredHelper }
+        }
+      } else if (state.gameType === 'Sedie') {
+        return {
+          dealerDomain: { requiredHelper },
+          hallType: { requiredHelper },
+          gameType: { requiredHelper },
+          tableID: { requiredHelper },
+          shoe: { numericHelper, requiredHelper },
+          round: { numericHelper, requiredHelper },
+          playerHandValue: { requiredHelper }
         }
       } else if (state.gameType === 'ExtraAndarBahar'){
         // Andar Cards
@@ -513,6 +525,7 @@ export default {
       v$.value.$touch()
 
       if (!v$.value.$error) {
+        // 基本共同欄位
         let payload = {
           dealerDomain: state.dealerDomain,
           hallType: state.hallType,
@@ -522,9 +535,9 @@ export default {
           round: state.round
         }
 
+        // 根據遊戲類型構建 result 物件
         if (state.gameType === 'Baccarat') {
-          payload = {
-            ...payload,
+          payload.result = {
             playerCard1: state.playerCard1,
             playerCard2: state.playerCard2,
             playerCard3: state.playerCard3,
@@ -533,26 +546,24 @@ export default {
             bankerCard3: state.bankerCard3
           }
         } else if (state.gameType === 'DragonTiger') {
-          payload = {
-            ...payload,
+          payload.result = {
             dragonCard: state.dragonCard,
             tigerCard: state.tigerCard
           }
-        } else if (state.gameType === 'Sicbo' || state.gameType === 'ExtraSicbo' || state.gameType === 'ThaiHiLo') {
-          payload = {
-            ...payload,
+        } else if (state.gameType === 'Sicbo' || state.gameType === 'ExtraSicbo' || state.gameType === 'ThaiHiLo'
+          || state.gameType === 'ThaiFishPrawnCrab' || state.gameType === 'FishPrawnCrab'
+        ) {
+          payload.result = {
             dice1: state.dice1,
             dice2: state.dice2,
             dice3: state.dice3
           }
         } else if (state.gameType === 'Roulette' || state.gameType === 'ExtraRoulette') {
-          payload = {
-            ...payload,
-            ball: state.ball,
+          payload.result = {
+            ball: state.ball
           }
         } else if (state.gameType === 'Twenty') {
-          payload = {
-            ...payload,
+          payload.result = {
             playerACard1: state.playerACard1,
             playerACard2: state.playerACard2,
             playerACard3: state.playerACard3,
@@ -561,25 +572,16 @@ export default {
             playerBCard3: state.playerBCard3
           }
         } else if (state.gameType === 'RBSicbo') {
-          payload = {
-            ...payload,
+          payload.result = {
             red: state.red,
             blue: state.blue
           }
         } else if (state.gameType === 'ExtraAndarBahar') {
-          // payload = {
-          //   ...payload,
-          //   totalAndarCard: state.totalAndarCard,
-          //   totalBaharCard: state.totalBaharCard,
-          //   mainCard: state.mainCard,
-          //   ...Array.from({ length: 25 }, (_, i) => ({ [`andarCard${i + 1}`]: state[`andarCard${i + 1}`] })).reduce((a, b) => ({ ...a, ...b }), {}),
-          //   ...Array.from({ length: 25 }, (_, i) => ({ [`baharCard${i + 1}`]: state[`baharCard${i + 1}`] })).reduce((a, b) => ({ ...a, ...b }), {})
-          // }          
-          payload = {
-            ...payload,
+          payload.result = {
             totalAndarCard: state.totalAndarCard,
             totalBaharCard: state.totalBaharCard,
             mainCard: state.mainCard,
+            // 只包含有值的 andarCard 和 baharCard
             ...Object.fromEntries(
               Array.from({ length: 25 }, (_, i) => [`andarCard${i + 1}`, state[`andarCard${i + 1}`]])
                 .filter(([_, v]) => v !== null && v !== undefined && v !== '')
@@ -588,7 +590,26 @@ export default {
               Array.from({ length: 25 }, (_, i) => [`baharCard${i + 1}`, state[`baharCard${i + 1}`]])
                 .filter(([_, v]) => v !== null && v !== undefined && v !== '')
             )
-          }          
+          }
+        } else if (state.gameType === 'Sedie') {
+          payload.result = {
+            playerHandValue: state.playerHandValue
+          }
+        } else if (state.gameType === 'Pok Deng') {
+          payload.result = {
+            playerACard1: state.playerACard1,
+            playerACard2: state.playerACard2,
+            playerACard3: state.playerACard3,
+            playerBCard1: state.playerBCard1,
+            playerBCard2: state.playerBCard2,
+            playerBCard3: state.playerBCard3,
+            bankerCard1: state.bankerCard1,
+            bankerCard2: state.bankerCard2,
+            bankerCard3: state.bankerCard3
+          }
+        } else {
+          // 預設情況，沒有特定的 result 結構
+          payload.result = {}
         }
 
         console.log(payload)

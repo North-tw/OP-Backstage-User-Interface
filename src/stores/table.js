@@ -24,7 +24,7 @@ export const useTableStore = defineStore('table', {
     },
     async switchTableStatus(payload = {}) {
       const method = 'patch'
-      const path = '/games/tables/1/status'
+      const path = `/games/tables/${payload.tableID}/status`
       const data = { params: { ...payload } }
       try {
         const response = await useTableAPI({ method, path, data })
