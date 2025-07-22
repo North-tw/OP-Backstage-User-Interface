@@ -5,7 +5,7 @@
   >
     <form @submit.prevent="readUser" class="row border border-2 border-primary p-3 mx-auto">
       <div class="col-12 mb-4 d-flex align-items-center justify-content-center">
-        <img class="img-fluid me-3" src="~@/assets/imgs/logo-57.png">
+    <!--    <img class="img-fluid me-3" src="~@/assets/imgs/logo-57.png"> -->
         <h1 class="mb-0">
           <span class="letter-spacing-s">OP Backstage</span>
         </h1>

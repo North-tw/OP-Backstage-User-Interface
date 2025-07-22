@@ -15,7 +15,7 @@
             @click="voidRoundDirectlyCheck"
             :disabled="v$.$invalid"
           >
-            Save
+            Apply
           </button>
           <button
             type="button"

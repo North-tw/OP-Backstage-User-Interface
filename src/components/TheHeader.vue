@@ -25,10 +25,10 @@
         to="/"
         :class="$style.headerHeight"
       >
-        <img
+      <!--   <img
           class="h-100 me-2"
           src="~@/assets/imgs/logo-57w.png"
-        >
+        > -->
         OP Backstage
       </router-link>
       <div class="border-start px-3 my-2">
