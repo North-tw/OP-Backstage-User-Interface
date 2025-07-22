@@ -135,6 +135,40 @@
             </div>
           </div>
 
+          <!-- statusSelect -->
+          <div v-if="inputMap[field].input==='statusSelect'">
+            <div class="col-12 position-relative">
+              <div class="d-flex flex-column">
+                <select
+                  :id="field"
+                  v-model="state[field]"
+                  class="form-select"
+                  :class="[{'border-danger': v$.county?.$error}]"
+                  :placeholder="labelMap[field].placeholder"
+                  @focus="v$[field].$touch"
+                >
+                  <option disabled="disabled">
+                    {{ labelMap[field].placeholder }}
+                  </option>
+                  <option :value="null">
+                    All
+                  </option>
+                  <option :value="'Open'">
+                    Open
+                  </option>
+                  <option :value="'Close'">
+                    Close
+                  </option>
+                </select>
+              </div>
+              <small
+                class="text-danger position-absolute end-0 error-text"
+                :class="[{'show': v$[field]?.$error}]"
+              >{{ v$[field]?.$errors[0]?.$message || '' }}</small>
+            </div>
+          </div>          
+          
+
         </div>
         <div class="col-12 d-flex">
           <button
@@ -204,14 +238,16 @@ export default {
       dealerDomain: null,
       hallType: null,
       gameType: null,
-      tableID: null
+      tableID: null,
+      status: null
     }
 
     const state = ref({
       dealerDomain: props.searchState.dealerDomain ?? null,
       hallType: props.searchState.hallType ?? null,
       gameType: props.searchState.gameType ?? null,
-      tableID: props.searchState.tableID ?? null
+      tableID: props.searchState.tableID ?? null,
+      status: props.searchState.status ?? null
     })
 
     watch(
@@ -232,7 +268,8 @@ export default {
       'dealerDomain',
       'hallType',
       'gameType',
-      'tableID'
+      'tableID',
+      'status'
     ]
 
     const labelMap = {
@@ -251,6 +288,10 @@ export default {
       tableID: {
         label: 'Table ID',
         placeholder: 'Select Table ID'
+      },
+      status: {
+        label: 'Status',
+        placeholder: 'Select Status'
       }
     }
 
@@ -258,7 +299,8 @@ export default {
       state.value.dealerDomain = dealerDomainList.value[0] || null
       state.value.hallType = hallList.value[0] || null
       state.value.gameType = null
-      state.value.tableID = null
+      state.value.tableID = null,
+      state.value.status = null
     }
 
     const updateSearchState = () => {
@@ -278,6 +320,9 @@ export default {
       },
       tableID: {
         input: 'tableIDSelect'
+      },
+      status: {
+        input: 'statusSelect'
       }      
     }
 
@@ -285,14 +330,16 @@ export default {
       dealerDomain: 'col-12 col-sm-6 col-md-6',
       hallType: 'col-12 col-sm-6 col-md-6',
       gameType: 'col-12 col-sm-6 col-md-6',
-      tableID: 'col-12 col-sm-6 col-md-6'
+      tableID: 'col-12 col-sm-6 col-md-6',
+      status: 'col-12 col-sm-6 col-md-6'
     }
 
     const rules = {
       dealerDomain: { requiredHelper },
       hallType: { requiredHelper },
       gameType: {},
-      tableID: {}
+      tableID: {},
+      status: {}
     }
 
     const v$ = useVuelidate(rules, state)
