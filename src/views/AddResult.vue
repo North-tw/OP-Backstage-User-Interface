@@ -249,15 +249,15 @@ export default {
         placeholder: 'Enter Round Number'
       },
       playerCard1: {
-        label: 'Plaer Card 1',
+        label: 'Player Card 1',
         placeholder: 'Select Player Card 1'
       },
       playerCard2: {
-        label: 'Plaer Card 2',
+        label: 'Player Card 2',
         placeholder: 'Select Player Card 2'
       },
       playerCard3: {
-        label: 'Plaer Card 3',
+        label: 'Player Card 3',
         placeholder: 'Select Player Card 3'
       },
       bankerCard1: {
