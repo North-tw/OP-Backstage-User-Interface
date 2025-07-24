@@ -240,7 +240,7 @@ export default {
       'Teenpatti 20-20': ['PlayerA', 'PlayerB'],
       RBSicbo: ['Red', 'Blue'],
       ExtraAndarBahar: ['MaindCard', 'AndarCards', 'BaharCards', 'TotalCardCount', 'WithRandomPay'],
-      'Pok Deng': ['PlayerA', 'PlayerB', 'Banker']
+      PokDeng: ['PlayerA', 'PlayerB', 'PlayerC', 'Banker']
     }  
     
     const allResultDetailFields = computed(() => {
