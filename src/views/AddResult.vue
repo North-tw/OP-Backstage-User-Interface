@@ -79,6 +79,9 @@ export default {
       playerBCard1: null,
       playerBCard2: null,
       playerBCard3: null,    
+      playerCCard1: null,
+      playerCCard2: null,
+      playerCCard3: null,         
       red: null,
       blue: null,
       playerHandValue: null,    
@@ -121,6 +124,9 @@ export default {
       state.playerBCard1 = null
       state.playerBCard2 = null
       state.playerBCard3 = null
+      state.playerCCard1 = null
+      state.playerCCard2 = null
+      state.playerCCard3 = null      
       state.red = null
       state.blue = null
       state.playerHandValue = null
@@ -320,6 +326,18 @@ export default {
         label: 'Player B Card 3',
         placeholder: 'Select Player B Card 3'
       },
+      playerCCard1: {
+        label: 'Player C Card 1',
+        placeholder: 'Select Player C Card 1'
+      },
+      playerCCard2: {
+        label: 'Player C Card 2',
+        placeholder: 'Select Player C Card 2'
+      },
+      playerCCard3: {
+        label: 'Player C Card 3',
+        placeholder: 'Select Player C Card 3'
+      },      
       red: {
         label: 'Red Dice',
         placeholder: 'Select Red Dice'
@@ -419,6 +437,23 @@ export default {
           playerBCard1: { requiredHelper },
           playerBCard2: { requiredHelper },
           playerBCard3: { requiredHelper }
+        }
+      } else if (state.gameType === 'PokDeng') {
+        return {
+          dealerDomain: { requiredHelper },
+          hallType: { requiredHelper },
+          gameType: { requiredHelper },
+          tableID: { requiredHelper },
+          shoe: { numericHelper, requiredHelper },
+          round: { numericHelper, requiredHelper },
+          playerACard1: { requiredHelper },
+          playerACard2: { requiredHelper },
+          playerBCard1: { requiredHelper },
+          playerBCard2: { requiredHelper },
+          playerCard1: { requiredHelper },
+          playerCard2: { requiredHelper },
+          bankerCard1: { requiredHelper },
+          bankerCard2: { requiredHelper }
         }
       } else if (state.gameType === 'RBSicbo') {
         return {
@@ -595,7 +630,7 @@ export default {
           payload.result = {
             playerHandValue: state.playerHandValue
           }
-        } else if (state.gameType === 'Pok Deng') {
+        } else if (state.gameType === 'PokDeng') {
           payload.result = {
             playerACard1: state.playerACard1,
             playerACard2: state.playerACard2,
@@ -603,6 +638,9 @@ export default {
             playerBCard1: state.playerBCard1,
             playerBCard2: state.playerBCard2,
             playerBCard3: state.playerBCard3,
+            playerCCard1: state.playerCCard1,
+            playerCCard2: state.playerCCard2,
+            playerCCard3: state.playerCCard3,            
             bankerCard1: state.bankerCard1,
             bankerCard2: state.bankerCard2,
             bankerCard3: state.bankerCard3
